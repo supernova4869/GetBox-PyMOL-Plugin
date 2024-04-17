@@ -170,7 +170,7 @@ def showbox(minX, maxX, minY, maxY, minZ, maxZ):
     "gridcenter %.3f %.3f %.3f # xyz-coordinates or auto\n" % (CenterX, CenterY, CenterZ)
     # output DSDP args
     DSDPBox = "*********DSDP Binding Pocket*********\n" + \
-    "--box_min %.3f %.3f %.3f --box_max %.3f %.3f %.3f\n" % (minX, maxX, minY, maxY, minZ, maxZ)
+    "--box_min %.3f %.3f %.3f --box_max %.3f %.3f %.3f\n" % (minX, minY, minZ, maxX, maxY, maxZ)
 
     printf(LeDockBox)
     printf(VinaBox)
