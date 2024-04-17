@@ -1,6 +1,6 @@
 # GetBox-PyMOL-Plugin
 
-**Forked from MengwuXiao's ![GetBox](https://github.com/supernova4869/GetBox-PyMOL-Plugin) project.**
+**Forked from MengwuXiao's [GetBox](https://github.com/MengwuXiao/GetBox-PyMOL-Plugin) project.**
 
 A PyMOL Plugin for calculating docking box for LeDock, AutoDock Vina and DSDP.
 <div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig1.jpg"></div>  
@@ -10,7 +10,8 @@ A PyMOL Plugin for calculating docking box for LeDock, AutoDock Vina and DSDP.
 
 新增了为分子对接程序 DSDP 生成盒子参数的功能.
 
-[](ScreenShot/Fig5.jpg)
+<div align=center><img src="https://github.com/supernova4869/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig5.jpg"></div>  
+<div align=center>示意图</div>
 
 生成盒子后, 输出 DSDP 的命令行参数.
 
