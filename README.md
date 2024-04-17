@@ -1,120 +1,20 @@
 # GetBox-PyMOL-Plugin
 
-**A PyMOL Plugin for calculating docking box for LeDock, AutoDock and AutoDock Vina.**
+**Forked from MengwuXiao's ![GetBox](https://github.com/supernova4869/GetBox-PyMOL-Plugin) project.**
+
+A PyMOL Plugin for calculating docking box for LeDock, AutoDock Vina and DSDP.
 <div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig1.jpg"></div>  
 <div align=center>Fig. 1 Screenshot of the tool</div>
 
-## Download  
-<a href="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/releases/download/v1.1/GetBox-PyMOL-Plugin.v20180204.zip">GetBox-PyMOL-Plugin.v20180204.zip</a>
+## 新功能
 
-## Tutorials
-<b><a href="#tutorial_cn">中文版教程请点击这里</a></b>
+新增了为分子对接程序 DSDP 生成盒子参数的功能.
 
-### Backgrouds
-<a href="http://autodock.scripps.edu/">**AutoDock**</a>, <a href="http://vina.scripps.edu/">**Autodock Vina**</a> and <a href="http://www.lephar.com/download.htm">**LeDock**</a> are widely used in the simulation the interactions between protein and small molecules. **Docking Box** is a key parameter for the docking. For the convienece and accuracy of the docking, this tool, **Getbox-PyMOL-Plugin**, is designed and created by **Mengwu Xiao** (Hunan University), which is firstly uploaded to <a href="http://bioms.org/thread-1234-1-1.html">**BioMS forum**</a> in 2014-7-30.
-  
-**Docking box format**  
-```python
-# Autodock Vina  
---center_x xx.x --center_y xx.x --center_z xx.x --size_x xx.x --size_y xx.x --size_z xx.x  
-  
-# LeDock  
-Binding pocket  
-xmin xmax  
-ymin ymax  
-zmin zmax  
+[](ScreenShot/Fig5.jpg)
 
-# AutoDock
-npts npX npY npZ # num. grid points in xyz
-spacing 0.375 # spacing (A)
-gridcenter CenterX, CenterY, CenterZ # xyz-coordinates or auto
-```
+生成盒子后, 输出 DSDP 的命令行参数.
 
-### Usages
-**1. Autodetect box**: Fetch the box with one click of mouse or use the code *autobox 5.0*  
-**2. Get box from selection (sele)** Select ligands or residues, then click the menu or use the code *getbox (sele), 5.0*  
-**3. Advanced usages**  Using cmd mode with more flexibility
-```python
-* autobox [extending] (NOTES: solvent & some anions will be removed)
-#this function autodetects box in chain A with one click of mouse, but sometimes it fails for too many ligands or no ligand
-#e.g. autobox
-* getbox [selection = (sele), [extending = 5.0]]
-#this function creates a box that around the selected objects (residues or ligands or HOH or others). Selecting ligands or residues in active cavity reported in papers is recommended
-#e.g. getbox
-#e.g. getbox (sele), 6.0
-* resibox [Residues String, [extending = 5.0]]
-#this function creates a box that arroud the input residues in chain A. Selecting residues in active cavity reported in papers is recommended
-#e.g. resibox resi 214+226+245, 8.0
-#e.g. resibox resi 234 + resn HEM, 6.0
-* showbox [minX, maxX, minY, maxY, minZ, maxZ]
-#this function creates a box based on the input axis, used to visualize box or amend box coordinate
-#e.g. showbox 2,3,4,5,6,7
-```
-
-### Installation
-Please follow the guiding steps shown in Fig 2. Open PyMOL->Plugin->(Plugin Manager)->Install (New) Plugin->Find GetBox Plugin.py->Restart PyMOL->Finished, Then you will see an additional menu *GetBox Plugin*. It has three submenus: Advanced usage, Autodetect box and Get box from selection (sele).  
-<div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig2.jpg"></div>
-<div align=center>Fig. 2 Installation Procedures of GetBox Plugin</div>  
-<div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/install.png"></div>  
-<div align=center>Fig. 2.1 Installation Procedures of GetBox Plugin（PyMOL version > 1.0）</div>
-
-### Method
-**1. Prepare proteins**  
-Remove solvents and ions  
-```python
-cmd.remove('solvent') # remove solvent
-removeions() # remove ions
-```
-Code for remove ions
-```python
-cmd.select("Ions", "((resn PO4) | (resn SO4) | (resn ZN) | (resn CA) | (resn MG) | (resn CL)) & hetatm") #Need futher optimizing
-cmd.remove("Ions")
-```
-**2. Get Box from ligand**  
-As shown in Fig. 3, The Docking Box is calculated based on the geometric center of the ligand.  
-```python
-cmd.select("ChaHet","hetatm & chain A") # Select small molecules in chain A 
-cmd.show("sticks", "ChaHet") # Show molecule in stick
-getbox("ChaHet",extending) # Box calculated based on the geometric center of the ligand. extending is a parameter to enlarge the box
-```
-<div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig3.jpg"/></div>
-<div align=center>Fig. 3 The method of getting box form ligand. PDB Code:3CL0</div>  
- 
-Key Codes：  
-```python
-([minX, minY, minZ],[maxX, maxY, maxZ]) = cmd.get_extent(selection) # get the box from selected objects
-minX = minX - float(extending) 
-minY = minY - float(extending)  
-minZ = minZ - float(extending)  
-maxX = maxX + float(extending)  
-maxY = maxY + float(extending)  
-maxZ = maxZ + float(extending)  
-```
-**3. Get Box from Residues**  
-As shown in Fig. 4, The Docking Box is calculated based on the geometric center of the residues. NOTES：Residues should choose the key amino acids based on the literature study or fetch from pocket analyze sotware, such as, CASTp, PASS, Pocket-Finder, PocketPicker and so on.
-Key codes：
-```python
-cmd.select("sele", ResiduesStr + " & chain A") # Select the residues described in ResiduesStr
-getbox("sele", extending) # Box calculated based on the geometric center of the residues. extending is a parameter to enlarge the box
-```
-<div align=center><img src="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/Screenshot/Fig4.jpg"/></div>
-<div align=center>Fig. 4 The method of getting box form Residues. PDB Code:3CL0</div>  
-
-### Changes
-2014-07-30  uploaded to http://bioms.org/forum.php?mod=viewthread&tid=1234   
-2018-02-04  uploaded to Github https://github.com/MengwuXiao/GetBox-PyMOL-Plugin, added tutorials in English; fixed some bugs (python 2.x/3.x and PyMOL 1.x are supported;)  
-
-<a id="tutorial_cn"></a>
-
-
-## 中文版说明书 (Tutorial, in Chinese)
-
-### 下载地址   
-<a href="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/releases/download/v1.1/GetBox-PyMOL-Plugin.v20180204.zip">GetBox-PyMOL-Plugin.v20180204.zip</a>
-
-### 视频教程  
-<a href="https://github.com/MengwuXiao/GetBox-PyMOL-Plugin/blob/master/usage_basic.mp4?raw=true">教程1 (19秒)</a><br>
-<a href="https://v.youku.com/v_show/id_XMzU2MTk5MDg0OA==.html">教程2 (从5:08开始)</a> [内容为“LeDock，AutoDock Vina分子对接与结果分析显示（PyMOL）教程”，清晰版百度盘下载地址：https://pan.baidu.com/s/1gGVlo0tkYShVXgJoe8FC6A， 密码：ghc6].
+## 以下是原作者的中文教程
 
 ### 背景简介
 本PyMOL插件是我2014年发表于BioMS论坛的 (<http://bioms.org/thread-1234-1-1.html>)。以下是转过来的原文。目前支持AutoDock、AutoDock Vina和LeDock和对接盒子的获取。  

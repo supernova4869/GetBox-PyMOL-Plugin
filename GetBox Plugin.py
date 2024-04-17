@@ -78,21 +78,21 @@ Notes:
 	
 def showaxes(minX, minY, minZ):
 	cmd.delete('axes')
-	w = 0.5 # cylinder width 
+	w = 0.3 # cylinder width 
 	l = 5.0 # cylinder length
 	obj = [
 	CYLINDER, minX, minY, minZ, minX + l, minY, minZ, w, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
 	CYLINDER, minX, minY, minZ, minX, minY + l, minZ, w, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
 	CYLINDER, minX, minY, minZ, minX, minY, minZ + l, w, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
 	]
-	cyl_text(obj,plain,[minX + l, minY, minZ - w],'X',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
-	cyl_text(obj,plain,[minX - w, minY + l , minZ],'Y',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
-	cyl_text(obj,plain,[minX-w, minY, minZ + l],'Z',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
+	# cyl_text(obj,plain,[minX + l, minY, minZ - w],'X',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
+	# cyl_text(obj,plain,[minX - w, minY + l , minZ],'Y',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
+	# cyl_text(obj,plain,[minX-w, minY, minZ + l],'Z',0.20,axes=[[3,0,0],[0,3,0],[0,0,3]])
 	cmd.load_cgo(obj,'axes')
 	return
    
 def showbox(minX, maxX, minY, maxY, minZ, maxZ):
-    linewidth = 3.0
+    linewidth = 5.0
     minX = float(minX)
     minY = float(minY)
     minZ = float(minZ)
@@ -161,17 +161,21 @@ def showbox(minX, maxX, minY, maxY, minZ, maxZ):
     "Binding pocket\n%.1f %.1f\n%.1f %.1f\n%.1f %.1f\n" % (minX, maxX, minY, maxY, minZ, maxZ)
     # output AutoDock Vina input file
     VinaBox = "*********AutoDock Vina Binding Pocket*********\n" + \
-    "--center_x %.1f --center_y %.1f --center_z %.1f --size_x %.1f --size_y %.1f --size_z %.1f\n" % (CenterX, CenterY, CenterZ, SizeX, SizeY, SizeZ)
+    "--center_x %.3f --center_y %.3f --center_z %.3f --size_x %.3f --size_y %.3f --size_z %.3f\n" % (CenterX, CenterY, CenterZ, SizeX, SizeY, SizeZ)
     # output AutoDock box information 
     # add this function in 2016-6-25 by mwxiao
     AutoDockBox ="*********AutoDock Grid Option*********\n" + \
     "npts %d %d %d # num. grid points in xyz\n" % (SizeX/0.375, SizeY/0.375, SizeZ/0.375) + \
     "spacing 0.375 # spacing (A)\n" + \
     "gridcenter %.3f %.3f %.3f # xyz-coordinates or auto\n" % (CenterX, CenterY, CenterZ)
+    # output DSDP args
+    DSDPBox = "*********DSDP Binding Pocket*********\n" + \
+    "--box_min %.3f %.3f %.3f --box_max %.3f %.3f %.3f\n" % (minX, maxX, minY, maxY, minZ, maxZ)
 
+    printf(LeDockBox)
     printf(VinaBox)
     printf(AutoDockBox)
-    printf(LeDockBox)
+    printf(DSDPBox)
     printf(BoxCode)
     cmd.zoom(boxName)
     #cmd.show('surface')
