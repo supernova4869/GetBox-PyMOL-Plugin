@@ -31,11 +31,11 @@ from pymol.vfont import plain
 
 def __init__(self):
 	self.menuBar.addcascademenu('Plugin', 'GetBox Plugin', 'GetBox PyMOL Plugin', label='GetBox Plugin')
-	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'GetBoxHelp', label='Advanced usage', command=lambda _ : GetBoxHelp())
-	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'AutoBox', label='Autodetect box', command=lambda _ : autobox())
-	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'GetBox', label='Get box from selection (sele)', command=lambda _ : getbox())
-	# self.menuBar.addmenuitem('GetBox Plugin', 'command', 'WriteBox', label='Write box file', command=lambda _ : writebox())
-	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'Remove HETATM', label='Remove HETATM', command=lambda _ : rmhet())
+	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'GetBoxHelp', label='Advanced usage', command=lambda _=self : GetBoxHelp())
+	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'AutoBox', label='Autodetect box', command=lambda _=self : autobox())
+	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'GetBox', label='Get box from selection (sele)', command=lambda _=self : getbox())
+	# self.menuBar.addmenuitem('GetBox Plugin', 'command', 'WriteBox', label='Write box file', command=lambda _=self : writebox())
+	self.menuBar.addmenuitem('GetBox Plugin', 'command', 'Remove HETATM', label='Remove HETATM', command=lambda _=self : rmhet())
 
 
 def GetBoxHelp():
@@ -49,12 +49,12 @@ this plugin is a simple tool to get box information for LeDock, Autodock (Vina) 
     this function autodetects box in chain A with one click of mouse, but sometimes it fails for too many ligands or no ligand
     e.g. autobox
     
-* getbox [selection = (sele), [extending = 5.0]]
+* getbox [selection = (sele), [extending = 8.0]]
     this function creates a box that around the selected objects (residues or ligands or HOH or others). Selecting ligands or residues in the active cavity reported in papers is recommended
     e.g. getbox
     e.g. getbox (sele), 6.0
     
-* resibox [Residues String, [extending = 5.0]]
+* resibox [Residues String, [extending = 8.0]]
     this function creates a box that arroud the input residues in chain A. Selecting residues in the active cavity reported in papers is recommended\n\
     e.g. resibox resi 214+226+245, 8.0
     e.g. resibox resi 234 + resn HEM, 6.0
@@ -169,7 +169,7 @@ def showbox(minX, maxX, minY, maxY, minZ, maxZ):
     #cmd.show('surface')
     return boxName
         
-def getbox(selection="(sele)", extending=5.0):
+def getbox(selection="(sele)", extending=8.0):
 	cmd.hide("spheres")
 	cmd.show("spheres", selection)
 	([minX, minY, minZ], [maxX, maxY, maxZ]) = cmd.get_extent(selection)
@@ -192,7 +192,7 @@ def removeions():
 
 
 # autodedect box
-def autobox(extending = 5.0):
+def autobox(extending = 8.0):
 	cmd.remove('solvent')
 	removeions()
 	cmd.select("Chain_A_Het","hetatm & chain A") #found error in pymol 1.8 change "chain a" to "chain A"
@@ -201,15 +201,15 @@ def autobox(extending = 5.0):
 
 
 # remove hetatm
-def rmhet(extending = 5.0):
+def rmhet(extending = 8.0):
 	cmd.select("rmhet", "hetatm")
 	cmd.remove("rmhet")
 	return
 
 
 # getbox from cavity residues that reported in papers 
-def resibox(ResiduesStr="", extending = 5.0):
-	cmd.select("Residues", ResiduesStr + " & chain A")
+def resibox(ResiduesStr="", extending = 8.0):
+	cmd.select("Residues", ResiduesStr)
 	getbox("Residues", extending)
 	return
 
