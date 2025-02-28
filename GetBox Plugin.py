@@ -153,6 +153,9 @@ def showbox(minX, maxX, minY, maxY, minZ, maxZ):
     "npts %d %d %d # num. grid points in xyz\n" % (sizeX/0.375, sizeY/0.375, sizeZ/0.375) + \
     "spacing 0.375 # spacing (A)\n" + \
     "gridcenter %.3f %.3f %.3f # xyz-coordinates or auto\n" % (centerX, centerY, centerZ)
+    # output AutoDock gpf command
+    AutoDockGPF ="*********AutoDock GPF*********\n" + \
+    "-p npts='%d,%d,%d' -p gridcenter='%.3f %.3f %.3f'\n" % (sizeX/0.375, sizeY/0.375, sizeZ/0.375, centerX, centerY, centerZ)
     # output AutoDock Vina input file
     VinaBox = "*********AutoDock Vina Binding Pocket*********\n" + \
     "--center_x %.3f --center_y %.3f --center_z %.3f --size_x %.3f --size_y %.3f --size_z %.3f\n" % (centerX, centerY, centerZ, sizeX, sizeY, sizeZ)
@@ -162,6 +165,7 @@ def showbox(minX, maxX, minY, maxY, minZ, maxZ):
 
     print(LeDockBox)
     print(AutoDockBox)
+    print(AutoDockGPF)
     print(VinaBox)
     print(DSDPBox)
     print(BoxCode)
